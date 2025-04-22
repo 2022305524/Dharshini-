@@ -1,0 +1,128 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyN0UPVU2oHVuS4/XS7NCmrI",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/2022305524/Dharshini-/blob/main/Code%202\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "J5acrhB8MPlt"
+      },
+      "outputs": [],
+      "source": [
+        "{\n",
+        "  \"nbformat\": 4,\n",
+        "  \"nbformat_minor\": 0,\n",
+        "  \"metadata\": {\n",
+        "    \"colab\": {\n",
+        "      \"provenance\": [],\n",
+        "      \"authorship_tag\": \"ABX9TyNq5HqdHzTrAX2zXwEhgZbO\",\n",
+        "      \"include_colab_link\": true\n",
+        "    },\n",
+        "    \"kernelspec\": {\n",
+        "      \"name\": \"python3\",\n",
+        "      \"display_name\": \"Python 3\"\n",
+        "    },\n",
+        "    \"language_info\": {\n",
+        "      \"name\": \"python\"\n",
+        "    }\n",
+        "  },\n",
+        "  \"cells\": [\n",
+        "    {\n",
+        "      \"cell_type\": \"markdown\",\n",
+        "      \"metadata\": {\n",
+        "        \"id\": \"view-in-github\",\n",
+        "        \"colab_type\": \"text\"\n",
+        "      },\n",
+        "      \"source\": [\n",
+        "        \"<a href=\\\"https://colab.research.google.com/github/RagaviKamaraj/Generative-AI---Naan-Mudhalvan/blob/main/Language_translator.ipynb\\\" target=\\\"_parent\\\"><img src=\\\"https://colab.research.google.com/assets/colab-badge.svg\\\" alt=\\\"Open In Colab\\\"/></a>\"\n",
+        "      ]\n",
+        "    },\n",
+        "    {\n",
+        "      \"cell_type\": \"code\",\n",
+        "      \"source\": [\n",
+        "        \"# Install required libraries\\n\",\n",
+        "        \"!pip install gradio transformers torch gtts --quiet\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"# Import necessary libraries\\n\",\n",
+        "        \"import gradio as gr\\n\",\n",
+        "        \"from transformers import pipeline\\n\",\n",
+        "        \"from gtts import gTTS\\n\",\n",
+        "        \"import os\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"# Define translation models for South Indian languages\\n\",\n",
+        "        \"translation_models = {\\n\",\n",
+        "        \"    \\\"English to Tamil\\\": \\\"Helsinki-NLP/opus-mt-en-ta\\\",\\n\",\n",
+        "        \"    \\\"English to Telugu\\\": \\\"Helsinki-NLP/opus-mt-en-te\\\",\\n\",\n",
+        "        \"    \\\"English to Kannada\\\": \\\"Helsinki-NLP/opus-mt-en-kn\\\",\\n\",\n",
+        "        \"    \\\"English to Malayalam\\\": \\\"Helsinki-NLP/opus-mt-en-ml\\\"\\n\",\n",
+        "        \"}\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"# Function to translate text\\n\",\n",
+        "        \"def translate_text(text, language):\\n\",\n",
+        "        \"    model_name = translation_models[language]\\n\",\n",
+        "        \"    translator = pipeline(\\\"translation\\\", model=model_name)\\n\",\n",
+        "        \"    translated_text = translator(text)[0][\\\"translation_text\\\"]\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"    # Generate speech\\n\",\n",
+        "        \"    tts = gTTS(translated_text, lang=\\\"ta\\\" if \\\"Tamil\\\" in language else\\n\",\n",
+        "        \"                                   \\\"te\\\" if \\\"Telugu\\\" in language else\\n\",\n",
+        "        \"                                   \\\"kn\\\" if \\\"Kannada\\\" in language else\\n\",\n",
+        "        \"                                   \\\"ml\\\")  # Malayalam\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"    audio_path = \\\"translated_speech.mp3\\\"\\n\",\n",
+        "        \"    tts.save(audio_path)\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"    return translated_text, audio_path\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"# Create a Gradio interface with dropdown for language selection\\n\",\n",
+        "        \"iface = gr.Interface(\\n\",\n",
+        "        \"    fn=translate_text,\\n\",\n",
+        "        \"    inputs=[\\n\",\n",
+        "        \"        gr.Textbox(lines=3, placeholder=\\\"Enter text in English...\\\"),\\n\",\n",
+        "        \"        gr.Dropdown(choices=list(translation_models.keys()), label=\\\"Select Target Language\\\")\\n\",\n",
+        "        \"    ],\\n\",\n",
+        "        \"    outputs=[gr.Textbox(label=\\\"Translated Text\\\"), gr.Audio(label=\\\"Text-to-Speech Output\\\")],\\n\",\n",
+        "        \"    title=\\\"South Indian Language Translator + TTS\\\",\\n\",\n",
+        "        \"    description=\\\"Enter text in English, select a South Indian language, and get the translated text with speech output.\\\"\\n\",\n",
+        "        \")\\n\",\n",
+        "        \"\\n\",\n",
+        "        \"# Launch the Gradio app\\n\",\n",
+        "        \"iface.launch(share=True)\"\n",
+        "      ],\n",
+        "      \"metadata\": {\n",
+        "        \"id\": \"GS27R6aYDFKF\"\n",
+        "      },\n",
+        "      \"execution_count\": null,\n",
+        "      \"outputs\": []\n",
+        "    }\n",
+        "  ]\n",
+        "}"
+      ]
+    }
+  ]
+}
